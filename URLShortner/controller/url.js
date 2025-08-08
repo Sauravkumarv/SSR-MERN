@@ -9,14 +9,16 @@ const handelGenerateNewShortUrl = async (req, res) => {
   }
   const shortid = nanoid(8);
   try {
-    const newUrl = await URL.create({
+ await URL.create({
       shortId: shortid,
       url: body.url,
       visitHistory: [],
+      createdBy:req.user._id,
     });
     const allUrls = await URL.find()
+    
 
-    return res.render('home',{shortId: shortid,
+    return res.render("home",{shortId: shortid,
     data: allUrls})
       
     

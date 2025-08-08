@@ -3,8 +3,11 @@ const dotenv=require('dotenv');
 const dbConnect=require("./config/db")
 const path=require('path')
 const cors=require('cors');
+const cookieParser=require('cookie-parser')
+const {restricToLoggedinUserOnly,checkAuth}=require('./middleware/auth')
 const router=require('./routes/urlRoute')
 const staticRouter=require('./routes/staticRoute')
+const user=require("./routes/userRoute")
 
 dotenv.config();
 const app=express();
@@ -18,12 +21,14 @@ app.set('views',path.resolve('./views'));
 app.use(express.json())
 app.use(express.urlencoded({extended:false}));
 app.use(cors());
+app.use(cookieParser());
 
 
 
 
-app.use('/api',router)
-app.use('/home',staticRouter)
+app.use('/api',restricToLoggedinUserOnly,router)
+app.use('/',checkAuth,staticRouter)
+app.use('/',user)
 
 
 
